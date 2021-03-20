@@ -4,6 +4,8 @@ import DayList from "components/DayList";
 import Appointment from "components/Appointment/index";
 import "components/Application.scss";
 import { getAppointmentsForDay } from '../helpers/selectors';
+import InterviewerList from "./InterviewerList";
+import getInterview from "../helpers/selectors";
 // const appointments = [
 //   {
 //     id: 1,
@@ -42,14 +44,14 @@ import { getAppointmentsForDay } from '../helpers/selectors';
 // ];
 
 
-export default function Application(props) {
+export default function Application() {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
     // you may put the line below, but will have to remove/comment hardcoded appointments variable
-    appointments: {}
+    appointments: {},
+    interviewers: {}
   });
-
   const setDay = day => setState({ ...state, day });
   const dailyAppointments = getAppointmentsForDay(state, state.day)
   useEffect(() => {
@@ -62,10 +64,13 @@ export default function Application(props) {
       setState(res => ({
         ...res,
         days: all[0].data,
-        appointments: all[1].data
+        appointments: all[1].data,
+        interviewers: all[2].data
       }))
     })
   }, [])
+  console.log(state.interviewers);
+  // const interview = getInterview(state, appointment.interview);
   return (
     <main className="layout">
       <section className="sidebar">
@@ -93,6 +98,7 @@ export default function Application(props) {
           return <Appointment
             key={appointment.id}
             {...appointment}
+
           />
         })}
         <Appointment key="last" time="5pm" />
