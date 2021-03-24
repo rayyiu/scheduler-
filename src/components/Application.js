@@ -6,6 +6,7 @@ import "components/Application.scss";
 import { getAppointmentsForDay, getInterviewersForDay } from '../helpers/selectors';
 import InterviewerList from "./InterviewerList";
 import { getInterview } from "../helpers/selectors";
+import useApplicationData from "../hooks/useApplicationData"
 
 // const appointments = [
 //   {
@@ -46,76 +47,82 @@ import { getInterview } from "../helpers/selectors";
 
 
 export default function Application() {
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    // you may put the line below, but will have to remove/comment hardcoded appointments variable
-    appointments: {},
-    interviewers: {}
-  });
-  const setDay = day => setState({ ...state, day });
+  const {
+    state,
+    setDay,
+    bookInterview,
+    cancelInterview
+  } = useApplicationData();
+  // const [state, setState] = useState({
+  //   day: "Monday",
+  //   days: [],
+  //   // you may put the line below, but will have to remove/comment hardcoded appointments variable
+  //   appointments: {},
+  //   interviewers: {}
+  // });
+  // const setDay = day => setState({ ...state, day });
   const dailyAppointments = getAppointmentsForDay(state, state.day)
   const interviewers = getInterviewersForDay(state, state.day);
 
-  function bookInterview(id, interview) {
-    console.log("bookinterview", id, interview);
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
+  // function bookInterview(id, interview) {
+  //   console.log("bookinterview", id, interview);
+  //   const appointment = {
+  //     ...state.appointments[id],
+  //     interview: { ...interview }
+  //   };
 
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
+  //   const appointments = {
+  //     ...state.appointments,
+  //     [id]: appointment
+  //   };
 
-    // setState({
-    //   ...state,
-    //   appointments
-    // });
+  //   // setState({
+  //   //   ...state,
+  //   //   appointments
+  //   // });
 
-    return axios.put(`/api/appointments/${id}`, appointment)
-      .then(() => {
-        setState({
-          ...state,
-          appointments
-        });
-      })
-  }
+  //   return axios.put(`/api/appointments/${id}`, appointment)
+  //     .then(() => {
+  //       setState({
+  //         ...state,
+  //         appointments
+  //       });
+  //     })
+  // // }
 
-  function cancelInterview(id) {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    return axios.delete(`/api/appointments/${id}`)
-      .then((res) => {
-        setState({
-          ...state,
-          appointments
-        })
-      })
-  }
+  // function cancelInterview(id) {
+  //   const appointment = {
+  //     ...state.appointments[id],
+  //     interview: null
+  //   };
+  //   const appointments = {
+  //     ...state.appointments,
+  //     [id]: appointment
+  //   };
+  //   return axios.delete(`/api/appointments/${id}`)
+  //     .then((res) => {
+  //       setState({
+  //         ...state,
+  //         appointments
+  //       })
+  //     })
+  // }
 
-  useEffect(() => {
-    Promise.all([
-      axios.get('/api/days'),
-      axios.get('/api/appointments'),
-      axios.get('/api/interviewers')
-    ]).then((all) => {
-      console.log(all);
-      setState(res => ({
-        ...res,
-        days: all[0].data,
-        appointments: all[1].data,
-        interviewers: all[2].data
-      }))
-    })
-  }, [])
+  // useEffect(() => {
+  //   Promise.all([
+  //     axios.get('/api/days'),
+  //     axios.get('/api/appointments'),
+  //     axios.get('/api/interviewers')
+  //   ]).then((all) => {
+  //     console.log(all);
+  //     setState(res => ({
+  //       ...res,
+  //       days: all[0].data,
+  //       appointments: all[1].data,
+  //       interviewers: all[2].data
+  //     }))
+  //   })
+  // }, [])
   console.log(state.interviewers);
   // const interview = getInterview(state, appointment.interview);
   return (
@@ -141,7 +148,6 @@ export default function Application() {
         />
       </section>
       <section className="schedule">
-
         {dailyAppointments.map(appointment => {
           const interview = getInterview(state, appointment.interview);
           return <Appointment

@@ -7,6 +7,7 @@ import Confirm from 'components/Appointment/Confirm';
 import Status from 'components/Appointment/Status';
 import useVisualMode from '../../hooks/useVisualMode';
 import Form from 'components/Appointment/Form';
+import Error from 'components/Appointment/Error';
 
 export default function Appointment(props) {
     const EMPTY = "EMPTY";
@@ -16,6 +17,8 @@ export default function Appointment(props) {
     const CONFIRM = "CONFIRM";
     const DELETE = "DELETE";
     const EDIT = "EDIT";
+    const ERROR_SAVE = "ERROR_SAVE";
+    const ERROR_DELETE = "ERROR_DELETE";
     const { mode, transition, back } = useVisualMode(
         props.interview ? SHOW : EMPTY
     );
@@ -25,21 +28,22 @@ export default function Appointment(props) {
             student: name,
             interviewer
         };
-        transition(SAVING)
+        transition(SAVING);
 
         props.bookInterview(props.id, interview)
             .then(() => transition(SHOW))
-            .catch(() => console.log("error"))
+            .catch(() => transition(ERROR_SAVE, true))
+        //YOU HAVE TO ADD HANDLING FOR NOT PICKING AN INTERVIEWER
     }
     const deleteInterview = function () {
         transition(CONFIRM);
     }
     const confirmDeletion = function () {
-        transition(DELETE);
+        transition(DELETE, true);
         console.log('does this work');
         props.cancelInterview(props.id)
             .then(() => transition(EMPTY))
-            .catch(err => console.log(err))
+            .catch(() => transition(ERROR_DELETE, true))
     }
 
     return (
@@ -83,6 +87,17 @@ export default function Appointment(props) {
                     onConfirm={confirmDeletion}
                     onCancel={back}
                 />}
+            {mode === ERROR_SAVE && (
+                <Error
+                    message="We were unable to save your changes"
+                    onClose={back} />
+            )}
+            {mode === ERROR_DELETE && (
+                <Error
+                    message="We were unable to delete"
+                    onClose={back}
+                />
+            )}
         </article>
     )
 }
