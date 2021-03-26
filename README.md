@@ -1,23 +1,16 @@
 # Interview Scheduler
+A react-based, single page application where Users are given the option to book interviews from available interviewers at open times, and see visually which times are taken up. Users are also given the functionality to edit and delete their interviews. 
+
+
+## Features
+- Schedule orgainzed by days and times
+- Fully functional interview booking, editing, and deleting
 
 ## Setup
+- Install dependencies with `npm install`.
+- Install API server by forking [scheduler-api](https://github.com/lighthouse-labs/scheduler-api).
 
-Install dependencies with `npm install`.
-
-## Running Webpack Development Server
-
-```sh
-npm start
-```
-
-## Running Jest Test Framework
-
-```sh
-npm test
-```
-
-## Running Storybook Visual Testbed
-
-```sh
-npm run storybook
-```
+## Dependencies
+- react
+- axios
+- classnames
