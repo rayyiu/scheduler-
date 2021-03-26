@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 export default function useVisualMode(initMode) {
     const [mode, setMode] = useState(initMode)
     const [history, setHistory] = useState([initMode]);
 
+    //Handles visual functionality for modes in index.js
     const transition = function (newMode, replace = false) {
         if (replace) {
             setMode(newMode);

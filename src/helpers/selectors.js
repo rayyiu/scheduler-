@@ -1,3 +1,4 @@
+//maps over an array of Days, returns an array with the appointments on any given day. 
 export function getAppointmentsForDay(state, day) {
     let result = [];
     let appointmentId = [];
@@ -24,26 +25,20 @@ export function getInterview(state, interview) {
     result['interviewer'] = state.interviewers[interview.interviewer];
     return result;
 }
-
+//The same as getAppointmentsForDay, returns an array of Interviewers available for a day.
 export function getInterviewersForDay(state, day) {
     let result = [];
     let interviewerId = [];
-    const interviewer2 = [];
-
     const daysArray = state.days;
     const interviewers = state.interviewers;
-    console.log('daysArray => ', daysArray);
-    // console.log('interviewerId =>', interviewerId, 'string', typeof interviewerId);
+
     daysArray.forEach(stateDay => {
         if (stateDay.name === day) {
             interviewerId.push(...stateDay.interviewers)
         }
-        //  return stateDay.name === day && interviewerId.push(...stateDay.interviewers)
     });
-    // console.log('interviewerId==>', interviewerId);
     for (let key in interviewers) {
         interviewerId.includes(interviewers[key].id) && result.push(interviewers[key])
     }
-    // console.log('result=>>', result);
     return result;
 };

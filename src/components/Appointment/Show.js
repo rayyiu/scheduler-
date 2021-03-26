@@ -1,8 +1,6 @@
-import { checkPropTypes } from 'prop-types';
 import React from 'react';
 
 export default function Show(props) {
-    console.log("show", props.interviewer)
     return (
         <main className="appointment__card appointment__card--show">
             <section className="appointment__card-left">

@@ -3,13 +3,13 @@ import classnames from "classnames";
 import "components/DayListItem.scss";
 
 export default function DayListItem(props) {
+    //displays how many spots are left in a day
     const formatSpots = props => {
         let num;
         let unit = 'spot';
 
         props.spots === 0 ? num = 'no' : num = props.spots;
         if (props.spots !== 1) { unit += 's' };
-        console.log('formatSpots', `${num} ${unit} remaining`)
         return `${num} ${unit} remaining`;
     }
 

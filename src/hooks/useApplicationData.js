@@ -1,22 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-// //the maximum appointments for a day.
-// // const totalSpots = day.appointments.length;
-// let availableSpots = 0;
-// days.appointment.forEach(day => {
-//     if (day.interview === null) {
-//         availableSpots += 1;
-//     }
-// })
-// return availableSpots
-// //perform check,
-
-// //spots is used in daylistitems
-// //loop through the days.appointments, 
-// //for each id, check if interview === null.
-// //
-// //return the number of availableSpots (the ones that are null in a day)
 
 export default function useApplicationData() {
     const [state, setState] = useState({
@@ -28,7 +12,7 @@ export default function useApplicationData() {
     });
 
     const setDay = day => setState({ ...state, day });
-
+    //previous updateSpots functionality
     // const updateSpots = function (number, dayName) {
     //     const dayArray = [...state.days];
     //     console.log('dayArray', dayArray);
@@ -43,18 +27,9 @@ export default function useApplicationData() {
     //     return updatedDays;
     // }
     // setState({ ...state, days: updatedDays })
-    //FUNCTIONALITY STILL NEEDS TO BE ADDED FOR EDITING SPOTS
-
-
-    //so when a day is set, we know that a spot has been taken.
-    //if we get a new appointment id, then we have to take a spot.
-    //if we get rid of an id, then we get back a spot.
-    //this function is going to a.) store spots,
-    //b.) be called to update in book interview
-    // and in cancel interview. So, whenever we set a day,
-    //we need to update a spot. 
-
-
+    //bookInterview function, gets id and interview, creates a appointment with the id passed in and the interview, 
+    //places this appointment into a appointments array, then returns a promise which carries the functionality through 
+    //to index.js for the Appointment component. Also handles for editing interviews and the spots functionality for that.
     function bookInterview(id, interview) {
         console.log("bookinterview", id, interview);
         const appointment = {
@@ -66,7 +41,7 @@ export default function useApplicationData() {
             ...state.appointments,
             [id]: appointment
         };
-
+        //also previous updateSpots functionality
         // const bookingSpot = updateSpots(-1, state.day);
         // setState({ ...state, days: bookingSpot });
 
@@ -82,6 +57,9 @@ export default function useApplicationData() {
         //         return day;
         //     }
         // })
+        //create a new promise when we create a new appointment, 
+        //promise resolves in index.js, gets data, updates spots,
+        //creates interview.
         return new Promise((res, rej) => {
             if (!appointment.interview.interviewer) {
                 rej()
@@ -105,7 +83,7 @@ export default function useApplicationData() {
                 })
         })
     }
-
+    //the same as book interview except here the functionality is to delete from the UI and the database. Promise again resolves in index.js of the Appointment component.
     function cancelInterview(id) {
         const appointment = {
             ...state.appointments[id],
@@ -131,7 +109,8 @@ export default function useApplicationData() {
                     })
             })
     }
-
+    //useEffect to setStates for main data items to be used in parent component Application.js.
+    //Promises get information from API and set the state for Application with them.
     useEffect(() => {
         Promise.all([
             axios.get('/api/days'),

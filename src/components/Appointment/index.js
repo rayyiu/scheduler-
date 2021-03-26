@@ -10,6 +10,7 @@ import Form from 'components/Appointment/Form';
 import Error from 'components/Appointment/Error';
 
 export default function Appointment(props) {
+    // All visual modes
     const EMPTY = "EMPTY";
     const SHOW = "SHOW";
     const CREATE = "CREATE";
@@ -19,10 +20,12 @@ export default function Appointment(props) {
     const EDIT = "EDIT";
     const ERROR_SAVE = "ERROR_SAVE";
     const ERROR_DELETE = "ERROR_DELETE";
+    //sets what props.interview will render
     const { mode, transition, back } = useVisualMode(
         props.interview ? SHOW : EMPTY
     );
     // console.log('name', props.interviewers)
+    //Handles save functionality visually, creates a new interview.
     const save = function (name, interviewer) {
         const interview = {
             student: name,
@@ -33,11 +36,12 @@ export default function Appointment(props) {
         props.bookInterview(props.id, interview)
             .then(() => transition(SHOW))
             .catch(() => transition(ERROR_SAVE, true))
-        //YOU HAVE TO ADD HANDLING FOR NOT PICKING AN INTERVIEWER
     }
+    //Transitions to visual confirm dialogue
     const deleteInterview = function () {
         transition(CONFIRM);
     }
+    //Confirms the deletion and cancels the interview, returning the page to empty, or to an error.
     const confirmDeletion = function () {
         transition(DELETE, true);
         // console.log('does this work');
@@ -45,7 +49,6 @@ export default function Appointment(props) {
             .then(() => transition(EMPTY))
             .catch(() => transition(ERROR_DELETE, true))
     }
-    console.log('propsInterviewersF', props.interview);
     return (
         <article className="appointment" data-testid="appointment">
             <Header time={props.time} />
@@ -101,13 +104,3 @@ export default function Appointment(props) {
         </article>
     )
 }
-//Update the onAdd function we pass to our Empty component to transition to the CREATE mode when the user clicks the add appointment button, instead of logging to the console.
-
-
-
-/* // /* {props.interview ? */
-            //     <Show student={props.interview.student}
-            //         interviewer={props.interview.interviewer} />
-            //     // : <Empty />} */
-
-//accept student:string, interviewer:Object cf.,stories/index.js, onEdit: Function, onDelete: Function
