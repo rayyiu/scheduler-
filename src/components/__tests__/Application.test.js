@@ -77,6 +77,32 @@ describe("Application", () => {
       queryByText(day, "Monday")
     );
   });
+  it("loads data, edits an interview and keeps the spots remaining for Monday the same", async () => {
+    //1. render the application
+    const { container } = render(<Application />);
+    // 2. Wait until the text "Archie Cohen" is displayed.
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+    // 3. Click the "Edit" button on the booked appointment.
+    const appointments = getAllByTestId(container, "appointment");
+    const appointment = appointments[1];
+    fireEvent.click(queryByAltText(appointment, "Edit"));
+    // 4. Update the input field
+    fireEvent.change(getByPlaceholderText(appointment, /enter student name/i), {
+      target: { value: "Lydia Miller-Jones" },
+    });
+    // 5. Update the interviewer
+    fireEvent.click(getByAltText(appointment, "Sylvia Palmer"));
+    // 6. Save Appointment
+    fireEvent.click(getByText(appointment, "Save"));
+    // 7. Check for SAVING text
+    expect(getByText(appointment, "SAVING")).toBeInTheDocument();
+    // 8. Wait for the new element to be displayed
+    await waitForElement(() => queryByText(appointment, "Lydia Miller-Jones"));
+
+    const day = getAllByTestId(container, "day").find((day) =>
+      queryByText(day, "Monday")
+    );
+  })
 
 
 
