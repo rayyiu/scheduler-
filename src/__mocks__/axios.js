@@ -92,7 +92,7 @@ export default {
         fixtures.days[0].spots += 1;
         return Promise.resolve({
             status: 204,
-            statusText: "there was a problem"
+            statusText: "Ok"
         })
     })
 }
