@@ -29,19 +29,21 @@ export default function useApplicationData() {
 
     const setDay = day => setState({ ...state, day });
 
-    const updateSpots = function (number, dayName) {
-        const dayArray = [...state.days];
-        console.log('dayArray', dayArray);
-        const updatedDays = dayArray.map((day) => {
-            if (day.name === dayName && day.spots >= 0) {
-                day.spots += number
-            };
-        })
-        console.log(dayName);
-        console.log('updatedDay', updatedDays)
-        setState({ ...state, updatedDays })
-    }
-
+    // const updateSpots = function (number, dayName) {
+    //     const dayArray = [...state.days];
+    //     console.log('dayArray', dayArray);
+    //     const updatedDays = dayArray.map((day) => {
+    //         if (day.name === dayName && day.spots >= 0) {
+    //             return { ...day, spots: day.spots += number }
+    //         };
+    //         return { ...day };
+    //     })
+    //     console.log(dayName);
+    //     console.log('updatedDay', updatedDays)
+    //     return updatedDays;
+    // }
+    // setState({ ...state, days: updatedDays })
+    //FUNCTIONALITY STILL NEEDS TO BE ADDED FOR EDITING SPOTS
 
 
     //so when a day is set, we know that a spot has been taken.
@@ -65,7 +67,8 @@ export default function useApplicationData() {
             [id]: appointment
         };
 
-        updateSpots(-1, state.day);
+        // const bookingSpot = updateSpots(-1, state.day);
+        // setState({ ...state, days: bookingSpot });
 
         // setState({
         //     ...state,
@@ -79,14 +82,28 @@ export default function useApplicationData() {
         //         return day;
         //     }
         // })
+        return new Promise((res, rej) => {
+            if (!appointment.interview.interviewer) {
+                rej()
+                return;
+            }
+            axios.put(`/api/appointments/${id}`, appointment)
+                .then(() => {
+                    axios.get(`/api/days`)
+                        .then((resTwo) => {
+                            setState({
+                                ...state,
+                                appointments,
+                                days: resTwo.data
+                            })
+                            res();
+                        })
 
-        return axios.put(`/api/appointments/${id}`, appointment)
-            .then(() => {
-                setState({
-                    ...state,
-                    appointments
-                });
-            })
+                })
+                .catch((a, b) => {
+                    rej();
+                })
+        })
     }
 
     function cancelInterview(id) {
@@ -99,14 +116,19 @@ export default function useApplicationData() {
             [id]: appointment
         };
 
-        updateSpots(1, state.day);
+        // const cancelSpot = updateSpots(1, state.day);
 
         return axios.delete(`/api/appointments/${id}`)
             .then((res) => {
-                setState({
-                    ...state,
-                    appointments
-                })
+                axios.get(`/api/days`)
+                    .then((resTwo) => {
+                        setState({
+                            ...state,
+                            appointments,
+                            days: resTwo.data
+                        })
+
+                    })
             })
     }
 
@@ -116,7 +138,7 @@ export default function useApplicationData() {
             axios.get('/api/appointments'),
             axios.get('/api/interviewers')
         ]).then((all) => {
-            console.log(all);
+            console.log('all', all);
             setState(res => ({
                 ...res,
                 days: all[0].data,
